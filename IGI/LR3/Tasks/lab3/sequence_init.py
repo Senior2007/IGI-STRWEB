@@ -4,11 +4,16 @@ import random
 
 from lab3.io_utils import read_float
 
+def generate_random(size: int, left: float = -10.0, right: float = 10.0):
+    """Random number generator"""
+    for _ in range(size):
+        yield random.uniform(left, right)
 
 def init_by_generator(sequence: list[float], size: int, left: float = -10.0, right: float = 10.0) -> list[float]:
     """Fill given sequence with random float values and return it."""
     sequence.clear()
-    sequence.extend(random.uniform(left, right) for _ in range(size))
+    for value in generate_random(size, left, right):
+        sequence.append(value)
     return sequence
 
 

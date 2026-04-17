@@ -31,8 +31,6 @@ def split_words(text: str) -> list[str]:
 
 def starts_with_consonant(word: str) -> bool:
     """Return True if word starts with an English consonant letter."""
-    if not word:
-        return False
     first = word[0]
     return first.isalpha() and first not in VOWELS
 

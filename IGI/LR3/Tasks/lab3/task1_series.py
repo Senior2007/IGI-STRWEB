@@ -14,16 +14,14 @@ def my_cos(x: float, eps: float, max_iterations: int = MAX_ITERATIONS) -> tuple[
     x = x % two_pi
     term = 1.0
     result = 0.0
-    terms_count = 0
     n = 0
 
     while n < max_iterations and abs(term) >= eps:
         result += term
-        terms_count += 1
         n += 1
         term *= -1.0 * x * x / ((2 * n - 1) * (2 * n))
 
-    return result, terms_count
+    return result, n
 
 
 @log_call

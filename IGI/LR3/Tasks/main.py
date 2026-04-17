@@ -1,4 +1,3 @@
 from lab3.menu import run_application
 
-if __name__ == "__main__":
-    run_application()
+run_application()
