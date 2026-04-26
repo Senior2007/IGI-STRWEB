@@ -13,7 +13,7 @@ from pathlib import Path
 from app.common.base import LabTask
 from app.common.io_utils import InputHelper
 from app.task3.models import CosineSeries
-from app.task3.plotters import PlotFactory, SvgPlotBuilder
+from app.task3.plotters import MatplotlibPlotBuilder
 from app.task3.statistics import SequenceStatistics, SeriesReportWriter
 
 
@@ -34,7 +34,7 @@ class Task3Runner(LabTask):
 
     def run(self, **kwargs: object) -> None:
         """Compute a series table, sequence statistics and a graph file."""
-        print("Variant 7 assumption used for task 3: cos(x) series.")
+        print("Task 3: cos(x) series.")
         start_x = InputHelper.ask_float("Enter the start value x_start: ")
         end_x = InputHelper.ask_float("Enter the end value x_end: ")
         while end_x < start_x:
@@ -54,18 +54,18 @@ class Task3Runner(LabTask):
         table_path = output_dir / "series_table.csv"
         report_path = output_dir / "report.txt"
 
-        plot_builder = PlotFactory.create()
-        graph_path = output_dir / ("graph.png" if plot_builder.__class__.__name__ != SvgPlotBuilder.__name__ else "graph.svg")
+        plot_builder = MatplotlibPlotBuilder()
+        graph_path = output_dir / "graph.png"
 
         SeriesReportWriter.save_table(table_path, points)
         SeriesReportWriter.save_report(report_path, points, stats, function.get_title())
-        plot_message = plot_builder.build(graph_path, points, function.get_title())
+        plot_message = plot_builder.build(graph_path, points, function.get_title(), show_plot=True)
 
         print("\nComputed table:")
-        print("x | F(x) | n | Math F(x) | eps | abs_error")
+        print("x | n | F(x) | Math F(x) | eps | abs_error")
         for point in points:
             print(
-                f"{point.x:.3f} | {point.series_value:.10f} | {point.terms_used} | "
+                f"{point.x:.3f} | {point.terms_used} | {point.series_value:.10f} | "
                 f"{point.math_value:.10f} | {point.epsilon:.6f} | {point.absolute_error:.10f}"
             )
 

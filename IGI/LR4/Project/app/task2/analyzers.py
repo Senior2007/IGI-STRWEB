@@ -84,3 +84,62 @@ class IpAddressRule(RegexRule):
             r"\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)$"
         )
         return "Yes" if pattern.fullmatch(text.strip()) else "No"
+
+
+class TextStatisticsCalculator:
+    """Calculate common sentence and word statistics for a text."""
+
+    @staticmethod
+    def _split_sentences(text: str) -> list[str]:
+        """Split text into non-empty sentences by terminal punctuation."""
+        return [part.strip() for part in re.split(r"(?<=[.!?])\s+", text.strip()) if part.strip()]
+
+    @staticmethod
+    def _words(text: str) -> list[str]:
+        """Return words used for length-based statistics."""
+        return re.findall(r"\b[0-9A-Za-zА-Яа-яЁё]+\b", text)
+
+    @staticmethod
+    def _smiley_count(text: str) -> int:
+        """Count smileys matching the lab specification."""
+        pattern = re.compile(r"[:;]-*(?:\(+|\)+|\[+|\]+)")
+        return len(pattern.findall(text))
+
+    @classmethod
+    def build_report_lines(cls, text: str) -> list[str]:
+        """Build formatted report lines with common text statistics."""
+        sentences = cls._split_sentences(text)
+        declarative = sum(1 for sentence in sentences if sentence.endswith("."))
+        interrogative = sum(1 for sentence in sentences if sentence.endswith("?"))
+        imperative = sum(1 for sentence in sentences if sentence.endswith("!"))
+
+        sentence_word_lengths: list[int] = []
+        for sentence in sentences:
+            sentence_words = cls._words(sentence)
+            sentence_word_lengths.append(sum(len(word) for word in sentence_words))
+
+        all_words = cls._words(text)
+        average_sentence_length = (
+            sum(sentence_word_lengths) / len(sentence_word_lengths)
+            if sentence_word_lengths
+            else 0.0
+        )
+        average_word_length = (
+            sum(len(word) for word in all_words) / len(all_words)
+            if all_words
+            else 0.0
+        )
+        smiley_count = cls._smiley_count(text)
+
+        return [
+            "Additional common statistics:",
+            f"Total number of sentences: {len(sentences)}",
+            (
+                "Number of sentences by type "
+                f"(declarative/interrogative/imperative): "
+                f"{declarative}/{interrogative}/{imperative}"
+            ),
+            f"Average sentence length in symbols (words only): {average_sentence_length:.2f}",
+            f"Average word length in symbols: {average_word_length:.2f}",
+            f"Number of smileys in text: {smiley_count}",
+        ]

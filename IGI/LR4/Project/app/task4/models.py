@@ -3,13 +3,14 @@
 Lab work: LR4 - Files, classes, serializers, regular expressions and standard libraries.
 Version: 1.0.0
 Developer: Lozhachnik
-Date: 2026-04-17
+Date: 2026-04-26
 """
 
 from __future__ import annotations
 
 import math
 from abc import ABC, abstractmethod
+from PIL import ImageColor
 
 from app.common.mixins import PositiveValueMixin, PrettyReprMixin
 
@@ -33,6 +34,10 @@ class FigureColor:
         clean_value = value.strip()
         if not clean_value:
             raise ValueError("Color name cannot be empty.")
+        try:
+            ImageColor.getrgb(clean_value)
+        except ValueError as error:
+            raise ValueError("Unsupported color name. Use a standard color like red, blue or green.") from error
         self._name = clean_value
 
 

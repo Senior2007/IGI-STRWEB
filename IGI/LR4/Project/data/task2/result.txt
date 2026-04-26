@@ -2,12 +2,13 @@ Task 2 report
 ========================================
 Source text:
 Andrew saw code42, lab7 and room2 during the new workshop.
-Slow wind moved below the yellow window while crew members wrote low notes.
-Model5 and alpha9 stayed near the narrow road, and new ideas grew.
+Slow wind moved below the yellow window while crew members wrote low notes :(?
+Model5 and alpha9 stayed near the narrow road, and new ideas grew!
+A :--------))))))))) ?
 
 
 Words with lowercase letters and digits: code42, lab7, room2, alpha9
-Number of words shorter than 6 symbols: 22
+Number of words shorter than 6 symbols: 23
 Shortest word ending with 'w': low
-Words in ascending order of length: and, and, and, low, new, new, saw, the, the, the, crew, grew, near, road, Slow, wind, below, ideas, moved, notes, while, wrote, Andrew, during, narrow, stayed, window, yellow, members, workshop
+Words in ascending order of length: A, and, and, and, low, new, new, saw, the, the, the, crew, grew, near, road, Slow, wind, below, ideas, moved, notes, while, wrote, Andrew, during, narrow, stayed, window, yellow, members, workshop
 Entered string is a decimal IPv4 address: Yes

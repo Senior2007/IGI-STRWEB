@@ -57,12 +57,12 @@ class SeriesReportWriter:
         """Save the series table to a CSV file."""
         with file_path.open("w", encoding="utf-8", newline="") as file:
             writer = csv.writer(file)
-            writer.writerow(["x", "F(x)", "n", "Math F(x)", "eps", "abs_error"])
+            writer.writerow(["x", "n", "F(x)", "Math F(x)", "eps", "abs_error"])
             for point in points:
                 writer.writerow([
                     f"{point.x:.6f}",
-                    f"{point.series_value:.10f}",
                     point.terms_used,
+                    f"{point.series_value:.10f}",
                     f"{point.math_value:.10f}",
                     f"{point.epsilon:.10f}",
                     f"{point.absolute_error:.10f}",
@@ -77,11 +77,11 @@ class SeriesReportWriter:
             f"Function: {function_title}",
             "",
             "Table:",
-            "x | F(x) | n | Math F(x) | eps | abs_error",
+            "x | n | F(x) | Math F(x) | eps | abs_error",
         ]
         for point in points:
             lines.append(
-                f"{point.x:.3f} | {point.series_value:.10f} | {point.terms_used} | "
+                f"{point.x:.3f} | {point.terms_used} | {point.series_value:.10f} | "
                 f"{point.math_value:.10f} | {point.epsilon:.6f} | {point.absolute_error:.10f}"
             )
 

@@ -17,6 +17,7 @@ from app.task2.analyzers import (
     LowercaseDigitWordsRule,
     ShortestWordEndingWithWRule,
     ShortWordsCountRule,
+    TextStatisticsCalculator,
     WordsSortedByLengthRule,
 )
 from app.task2.archive_utils import ResultArchiver
@@ -32,6 +33,7 @@ class Task2Runner(LabTask):
         """Analyze the source text and archive the result file."""
         source_document = TextDocument(Path("data/task2/source_text.txt"))
         result_document = TextDocument(Path("data/task2/result.txt"))
+        statistics_document = TextDocument(Path("data/task2/statistics.txt"))
         source_text = source_document.read()
         ip_candidate = InputHelper.ask_text("Enter a string to check as an IP address: ")
 
@@ -51,13 +53,18 @@ class Task2Runner(LabTask):
 
         report_text = "\n".join(report_lines)
         result_document.write(report_text)
+        statistics_lines = TextStatisticsCalculator.build_report_lines(source_text)
+        statistics_text = "\n".join(statistics_lines)
+        statistics_document.write(statistics_text)
 
         archive_path = Path("data/task2/result.zip")
         archiver = ResultArchiver(archive_path)
         archiver.archive(result_document.path)
 
         print("\n" + report_text)
+        print("\n" + statistics_text)
         print("\nArchive info:")
         print(archiver.get_info())
         print(f"\nResult file saved to: {result_document.path}")
+        print(f"Statistics file saved to: {statistics_document.path}")
         print(f"Archive saved to: {archive_path}")
