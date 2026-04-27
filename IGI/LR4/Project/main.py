@@ -15,6 +15,7 @@ from app.task2.cli import Task2Runner
 from app.task3.cli import Task3Runner
 from app.task4.cli import Task4Runner
 from app.task5.cli import Task5Runner
+from app.task6.cli import Task6Runner
 
 
 def build_tasks() -> dict[str, object]:
@@ -25,6 +26,7 @@ def build_tasks() -> dict[str, object]:
         "3": Task3Runner(),
         "4": Task4Runner(),
         "5": Task5Runner(),
+        "6": Task6Runner(),
     }
 
 
@@ -36,6 +38,7 @@ def show_menu() -> None:
     print("3. Task 3 - Series and graph")
     print("4. Task 4 - Regular hexagon")
     print("5. Task 5 - NumPy matrix")
+    print("6. Task 6 - Pandas and Netflix Stock")
     print("0. Exit")
 
 
@@ -56,7 +59,7 @@ def interactive_loop() -> None:
     """Run the menu loop until the user exits the program."""
     while True:
         show_menu()
-        choice = InputHelper.ask_choice("Choose a task number: ", {"0", "1", "2", "3", "4", "5"})
+        choice = InputHelper.ask_choice("Choose a task number: ", {"0", "1", "2", "3", "4", "5", "6"})
         if choice == "0":
             print("Program finished.")
             break
@@ -67,7 +70,7 @@ def interactive_loop() -> None:
 def parse_args() -> argparse.Namespace:
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(description="Laboratory work 4 launcher")
-    parser.add_argument("--task", choices=["1", "2", "3", "4", "5"], help="Run one task without the menu")
+    parser.add_argument("--task", choices=["1", "2", "3", "4", "5", "6"], help="Run one task without the menu")
     parser.add_argument("--no-gui", action="store_true", help="Do not open the Tk window for task 4")
     return parser.parse_args()
 
