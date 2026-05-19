@@ -1,0 +1,25 @@
+{% extends 'shop/base.html' %}
+{% block title %}{{ part.name }}{% endblock %}
+{% block content %}
+<article class="detail">
+    <h1>{{ part.name }}</h1>
+    {% if part.image_url %}<img class="detail-image" src="{{ part.image_url }}" alt="{{ part.name }}">{% endif %}
+    <p>{{ part.description }}</p>
+    <table class="data-table">
+        <tr><th>Артикул</th><td>{{ part.sku }}</td></tr>
+        <tr><th>Тип</th><td>{{ part.product_type.name }}</td></tr>
+        <tr><th>Изготовитель</th><td>{{ part.manufacturer.name }}, {{ part.manufacturer.country }}</td></tr>
+        <tr><th>Цена</th><td>{{ part.price }} BYN</td></tr>
+        <tr><th>Остаток</th><td>{{ part.quantity }}</td></tr>
+        <tr><th>Поставщики</th><td>{% for supplier in part.suppliers.all %}{{ supplier.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</td></tr>
+        <tr><th>Создано</th><td>{{ part.created_at_utc|date:"d/m/Y H:i" }} UTC / {{ part.created_at_local_text }} {{ part.created_at_timezone }}</td></tr>
+    </table>
+    <div class="actions">
+        {% if user.is_authenticated %}<a class="button" href="{% url 'sale_create' %}?part={{ part.pk }}">Купить</a>{% endif %}
+        {% if user.is_staff or user.is_superuser %}
+            <a class="button" href="{% url 'part_update' part.pk %}">Редактировать</a>
+            <a class="button danger" href="{% url 'part_delete' part.pk %}">Удалить</a>
+        {% endif %}
+    </div>
+</article>
+{% endblock %}

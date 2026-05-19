@@ -1,0 +1,72 @@
+{% extends 'shop/base.html' %}
+{% block title %}Товары{% endblock %}
+{% block content %}
+<div class="page-title">
+    <h1>Каталог запчастей</h1>
+    {% if user.is_staff or user.is_superuser %}
+        <a class="button" href="{% url 'part_create' %}">Добавить товар</a>
+    {% endif %}
+</div>
+
+<div class="toolbar">
+    <input id="partSearch" type="search" placeholder="Поиск по названию, артикулу, типу">
+    <select id="partSort">
+        <option value="name">Название</option>
+        <option value="price">Цена</option>
+        <option value="quantity">Остаток</option>
+    </select>
+</div>
+
+<table class="data-table" id="partsTable">
+    <thead>
+    <tr><th>Фото</th><th>Артикул</th><th>Название</th><th>Тип</th><th>Изготовитель</th><th>Цена</th><th>Остаток</th><th></th></tr>
+    </thead>
+    <tbody>
+    {% for part in parts %}
+        <tr data-name="{{ part.name|lower }}" data-sku="{{ part.sku|lower }}" data-type="{{ part.product_type.name|lower }}" data-price="{{ part.price }}" data-quantity="{{ part.quantity }}">
+            <td>{% if part.image_url %}<img class="thumb" src="{{ part.image_url }}" alt="{{ part.name }}">{% endif %}</td>
+            <td>{{ part.sku }}</td>
+            <td><a href="{{ part.get_absolute_url }}">{{ part.name }}</a></td>
+            <td>{{ part.product_type.name }}</td>
+            <td>{{ part.manufacturer.name }}</td>
+            <td>{{ part.price }} BYN</td>
+            <td>{{ part.quantity }}</td>
+            <td>
+                {% if user.is_authenticated %}<a href="{% url 'sale_create' %}?part={{ part.pk }}">Купить</a>{% endif %}
+                {% if user.is_staff or user.is_superuser %}
+                    <a href="{% url 'part_update' part.pk %}">Изм.</a>
+                    <a href="{% url 'part_delete' part.pk %}">Удал.</a>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+{% block scripts %}
+<script>
+const searchInput = document.getElementById('partSearch');
+const sortSelect = document.getElementById('partSort');
+const tbody = document.querySelector('#partsTable tbody');
+function filterRows() {
+    const query = searchInput.value.trim().toLowerCase();
+    [...tbody.rows].forEach(row => {
+        const value = `${row.dataset.name} ${row.dataset.sku} ${row.dataset.type}`;
+        row.hidden = !value.includes(query);
+    });
+}
+function sortRows() {
+    const key = sortSelect.value;
+    const rows = [...tbody.rows];
+    rows.sort((a, b) => {
+        if (key === 'price' || key === 'quantity') {
+            return Number(a.dataset[key]) - Number(b.dataset[key]);
+        }
+        return a.dataset.name.localeCompare(b.dataset.name, 'ru');
+    });
+    rows.forEach(row => tbody.appendChild(row));
+}
+searchInput.addEventListener('input', filterRows);
+sortSelect.addEventListener('change', sortRows);
+</script>
+{% endblock %}

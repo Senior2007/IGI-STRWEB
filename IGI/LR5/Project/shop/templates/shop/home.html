@@ -1,0 +1,31 @@
+{% extends 'shop/base.html' %}
+{% block title %}Главная{% endblock %}
+{% block content %}
+<section class="hero">
+    <div>
+        <h1>Автомагазин запасных частей</h1>
+        <p>Каталог деталей, поставщики, продажи, отзывы и промокоды в одном Django-проекте.</p>
+    </div>
+    <div class="metrics">
+        <span><strong>{{ parts_count }}</strong> товаров</span>
+        <span><strong>{{ suppliers_count }}</strong> поставщиков</span>
+        <span><strong>{{ active_promos }}</strong> промокодов</span>
+    </div>
+</section>
+
+<section class="section">
+    <h2>Последняя новость</h2>
+    {% if latest_news %}
+        <article class="news-card">
+            {% if latest_news.image_url %}<img src="{{ latest_news.image_url }}" alt="{{ latest_news.title }}">{% endif %}
+            <div>
+                <h3>{{ latest_news.title }}</h3>
+                <p>{{ latest_news.summary }}</p>
+                <a class="button" href="{{ latest_news.get_absolute_url }}">Читать далее</a>
+            </div>
+        </article>
+    {% else %}
+        <p>Новости пока не опубликованы.</p>
+    {% endif %}
+</section>
+{% endblock %}

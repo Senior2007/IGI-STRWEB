@@ -1,0 +1,51 @@
+{% extends 'shop/base.html' %}
+{% block title %}Личный кабинет{% endblock %}
+{% block content %}
+<h1>Личный кабинет</h1>
+{% if client %}
+    <section class="section">
+        <h2>Профиль клиента</h2>
+        <p>{{ client.last_name }} {{ client.first_name }}, {{ client.phone }}, {{ client.email }}</p>
+    </section>
+    <section class="section">
+        <h2>Мои покупки</h2>
+        <table class="data-table">
+            <thead><tr><th>Дата</th><th>Товар</th><th>Количество</th><th>Цена</th><th>Сумма</th></tr></thead>
+            <tbody>
+            {% for sale in sales %}
+                <tr>
+                    <td>{{ sale.sold_at|date:"d/m/Y H:i" }}</td>
+                    <td>{{ sale.part.name }}</td>
+                    <td>{{ sale.quantity }}</td>
+                    <td>{{ sale.unit_price }}</td>
+                    <td>{{ sale.total_price }}</td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="5">Покупок пока нет.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </section>
+{% endif %}
+
+{% if employee %}
+    <section class="section">
+        <h2>Профиль сотрудника</h2>
+        <p>{{ employee.last_name }} {{ employee.first_name }}, {{ employee.position }}</p>
+    </section>
+{% endif %}
+
+{% if user.is_staff %}
+    <section class="section">
+        <h2>Последние продажи для сотрудника</h2>
+        <table class="data-table">
+            <thead><tr><th>Клиент</th><th>Товар</th><th>Количество</th><th>Дата</th></tr></thead>
+            <tbody>
+            {% for sale in staff_sales %}
+                <tr><td>{{ sale.client }}</td><td>{{ sale.part.name }}</td><td>{{ sale.quantity }}</td><td>{{ sale.sold_at|date:"d/m/Y H:i" }}</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </section>
+{% endif %}
+{% endblock %}

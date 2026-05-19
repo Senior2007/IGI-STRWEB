@@ -1,0 +1,18 @@
+{% extends 'shop/base.html' %}
+{% block title %}Вакансии{% endblock %}
+{% block content %}
+<h1>Вакансии</h1>
+<table class="data-table">
+    <thead><tr><th>Должность</th><th>Описание</th><th>Зарплата</th><th>Статус</th></tr></thead>
+    <tbody>
+    {% for vacancy in vacancies %}
+        <tr>
+            <td>{{ vacancy.title }}</td>
+            <td>{{ vacancy.description }}</td>
+            <td>{{ vacancy.salary_min }} - {{ vacancy.salary_max }} BYN</td>
+            <td>{% if vacancy.is_active %}активна{% else %}архив{% endif %}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
