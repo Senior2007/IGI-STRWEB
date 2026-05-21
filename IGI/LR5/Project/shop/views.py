@@ -5,13 +5,15 @@ import os
 import statistics
 from collections import Counter
 from decimal import Decimal
+from zoneinfo import ZoneInfo
 
 import requests
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.csrf import ensure_csrf_cookie
-from django.db.models import Count, F, Sum
+from django.db.models import Count, F, Q, Sum
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
@@ -39,17 +41,34 @@ def staff_required(view_func):
     return user_passes_test(lambda user: user.is_authenticated and (user.is_staff or user.is_superuser))(view_func)
 
 
+def _project_timezone():
+    return ZoneInfo(settings.TIME_ZONE)
+
+
+def _format_utc_offset(tz_info):
+    offset = timezone.now().astimezone(tz_info).utcoffset()
+    if offset is None:
+        return ''
+    total_minutes = int(offset.total_seconds() // 60)
+    hours, minutes = divmod(abs(total_minutes), 60)
+    sign = '+' if total_minutes >= 0 else '-'
+    return f'UTC{sign}{hours:02d}:{minutes:02d}'
+
+
 def _calendar_text():
-    today = timezone.localdate()
+    today = timezone.now().astimezone(_project_timezone()).date()
     return calendar.month(today.year, today.month)
 
 
 def _base_time_context():
+    tz_info = _project_timezone()
     now_utc = timezone.now()
+    now_local = now_utc.astimezone(tz_info)
     return {
         'now_utc': now_utc,
-        'now_local': timezone.localtime(now_utc),
-        'server_timezone': timezone.get_current_timezone_name(),
+        'now_local': now_local,
+        'server_timezone': tz_info.key,
+        'timezone_offset': _format_utc_offset(tz_info),
         'text_calendar': _calendar_text(),
     }
 
@@ -152,6 +171,17 @@ def part_list(request):
         if selected_type:
             parts = parts.filter(product_type=selected_type)
 
+    search_query = request.GET.get('q', '').strip()
+    if search_query:
+        search_filter = (
+            Q(name__icontains=search_query)
+            | Q(product_type__name__icontains=search_query)
+            | Q(manufacturer__name__icontains=search_query)
+        )
+        if request.user.is_authenticated and (request.user.is_staff or request.user.is_superuser):
+            search_filter |= Q(sku__icontains=search_query)
+        parts = parts.filter(search_filter)
+
     sort = request.GET.get('sort', 'name')
     sort_map = {
         'name': 'name',
@@ -170,6 +200,7 @@ def part_list(request):
             'types': types,
             'selected_type': selected_type,
             'current_sort': sort,
+            'search_query': search_query,
             **_base_time_context(),
         },
     )
@@ -336,7 +367,9 @@ def parts_api(request):
 def stats(request):
     sales = Sale.objects.select_related('part', 'part__product_type')
     totals = [sale.total_price for sale in sales]
-    type_counter = Counter(sale.part.product_type.name for sale in sales)
+    type_counter = Counter()
+    for sale in sales:
+        type_counter[sale.part.product_type.name] += sale.quantity
     total_sum = sum(totals, Decimal('0.00'))
     stat_values = {
         'total_sum': total_sum,

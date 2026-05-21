@@ -269,6 +269,12 @@ class ShopViewTests(TestCase):
         self.assertContains(response, 'Фара')
         self.assertNotContains(response, f'href="{self.part.get_absolute_url()}"')
 
+    def test_part_list_search_without_javascript(self):
+        response = self.client.get(reverse('part_list'), {'q': 'Фильтр'})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Фильтр')
+        self.assertNotContains(response, '<script>')
+
     def test_part_list_sort_by_price(self):
         cheap = Part.objects.create(
             sku='T-CHEAP',

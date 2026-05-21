@@ -31,10 +31,12 @@ SECRET_KEY = os.environ.get(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = os.environ.get(
-    'DJANGO_ALLOWED_HOSTS',
-    '127.0.0.1,localhost,testserver,0.0.0.0',
-).split(',')
+# ALLOWED_HOSTS = os.environ.get(
+#     'DJANGO_ALLOWED_HOSTS',
+#     '127.0.0.1,localhost,testserver,0.0.0.0',
+# ).split(',')*/
+
+ALLOWED_HOSTS = ['IvanLozhachnik.pythonanywhere.com', '127.0.0.1', 'localhost']
 
 CSRF_TRUSTED_ORIGINS = [
     origin.strip()
