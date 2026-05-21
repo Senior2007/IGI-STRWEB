@@ -10,12 +10,13 @@ import requests
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.db.models import Count, F, Sum
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
-from .forms import PartForm, RegistrationForm, ReviewForm, SaleForm
+from .forms import ClientProfileForm, PartForm, RegistrationForm, ReviewForm, SaleForm
 from .models import (
     Client,
     CompanyInfo,
@@ -132,16 +133,45 @@ def review_create(request):
     return render(request, 'shop/form.html', {'form': form, 'title': 'Добавить отзыв', **_base_time_context()})
 
 
+@login_required
 def promos(request):
-    return render(request, 'shop/promos.html', {'promos': PromoCode.objects.all(), **_base_time_context()})
+    return render(
+        request,
+        'shop/promos.html',
+        {'promos': PromoCode.objects.prefetch_related('product_types'), **_base_time_context()},
+    )
 
 
 def part_list(request):
     parts = Part.objects.select_related('product_type', 'manufacturer').filter(is_active=True)
+    types = ProductType.objects.all()
+    selected_type = None
+    type_id = request.GET.get('type')
+    if type_id:
+        selected_type = types.filter(pk=type_id).first()
+        if selected_type:
+            parts = parts.filter(product_type=selected_type)
+
+    sort = request.GET.get('sort', 'name')
+    sort_map = {
+        'name': 'name',
+        'price': 'price',
+        'price_desc': '-price',
+        'quantity': 'quantity',
+        'quantity_desc': '-quantity',
+    }
+    parts = parts.order_by(sort_map.get(sort, 'name'))
+
     return render(
         request,
         'shop/part_list.html',
-        {'parts': parts, 'types': ProductType.objects.all(), **_base_time_context()},
+        {
+            'parts': parts,
+            'types': types,
+            'selected_type': selected_type,
+            'current_sort': sort,
+            **_base_time_context(),
+        },
     )
 
 
@@ -191,17 +221,27 @@ def part_delete(request, pk):
     return render(request, 'shop/confirm_delete.html', {'object': part, 'title': 'Удалить товар', **_base_time_context()})
 
 
+def _get_client_profile(user):
+    try:
+        return user.client_profile
+    except Client.DoesNotExist:
+        return None
+
+
 @login_required
 def sale_create(request):
-    client = getattr(request.user, 'client_profile', None)
+    client = _get_client_profile(request.user)
     if not client:
-        messages.error(request, 'Для покупки нужен профиль клиента.')
-        return redirect('profile')
+        messages.warning(request, 'Для покупки нужно заполнить профиль клиента.')
+        return redirect('complete_client_profile')
     if request.method == 'POST':
         form = SaleForm(request.POST, client=client)
         if form.is_valid():
             sale = form.save()
-            messages.success(request, f'Покупка сохранена: {sale.part.name}.')
+            message = f'Покупка сохранена: {sale.part.name}.'
+            if form.promo:
+                message += f' Промокод {form.promo.code}: скидка {form.promo.discount_percent}%.'
+            messages.success(request, message)
             return redirect('profile')
     else:
         initial = {'part': request.GET.get('part')} if request.GET.get('part') else None
@@ -210,8 +250,42 @@ def sale_create(request):
 
 
 @login_required
+def complete_client_profile(request):
+    if _get_client_profile(request.user):
+        return redirect('profile')
+    if request.user.is_staff or request.user.is_superuser:
+        messages.info(request, 'Для сотрудников покупки оформляются через клиентский аккаунт.')
+        return redirect('profile')
+    if request.method == 'POST':
+        form = ClientProfileForm(request.POST)
+        if form.is_valid():
+            client = form.save(commit=False)
+            client.user = request.user
+            client.save()
+            request.user.first_name = client.first_name
+            request.user.last_name = client.last_name
+            request.user.email = client.email
+            request.user.save(update_fields=['first_name', 'last_name', 'email'])
+            messages.success(request, 'Профиль клиента сохранен. Теперь можно оформлять покупки.')
+            return redirect('profile')
+    else:
+        form = ClientProfileForm(
+            initial={
+                'first_name': request.user.first_name,
+                'last_name': request.user.last_name,
+                'email': request.user.email,
+            }
+        )
+    return render(
+        request,
+        'shop/form.html',
+        {'form': form, 'title': 'Профиль клиента', **_base_time_context()},
+    )
+
+
+@login_required
 def profile(request):
-    client = getattr(request.user, 'client_profile', None)
+    client = _get_client_profile(request.user)
     employee = getattr(request.user, 'employee_profile', None)
     sales = Sale.objects.select_related('part').filter(client=client) if client else Sale.objects.none()
     staff_sales = Sale.objects.select_related('client', 'part').all()[:20] if request.user.is_staff else []
@@ -222,12 +296,16 @@ def profile(request):
     )
 
 
+@ensure_csrf_cookie
 def register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
+            if not _get_client_profile(user):
+                messages.warning(request, 'Аккаунт создан. Заполните профиль клиента для покупок.')
+                return redirect('complete_client_profile')
             messages.success(request, 'Регистрация завершена.')
             return redirect('profile')
     else:
@@ -247,11 +325,14 @@ def external_apis(request):
 
 @login_required
 def parts_api(request):
-    parts = Part.objects.filter(is_active=True).values('sku', 'name', 'price', 'quantity')
+    fields = ['name', 'price', 'quantity']
+    if request.user.is_staff or request.user.is_superuser:
+        fields = ['sku', 'name', 'price', 'quantity']
+    parts = Part.objects.filter(is_active=True).values(*fields)
     return JsonResponse({'results': list(parts)})
 
 
-@login_required
+@staff_required
 def stats(request):
     sales = Sale.objects.select_related('part', 'part__product_type')
     totals = [sale.total_price for sale in sales]
@@ -272,7 +353,7 @@ def stats(request):
     )
 
 
-@login_required
+@staff_required
 def sales_chart(request):
     os.environ.setdefault('MPLCONFIGDIR', os.path.join(os.getcwd(), '.matplotlib'))
     import matplotlib

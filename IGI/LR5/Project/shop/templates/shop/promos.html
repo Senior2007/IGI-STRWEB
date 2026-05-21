@@ -3,13 +3,14 @@
 {% block content %}
 <h1>Промокоды и купоны</h1>
 <table class="data-table">
-    <thead><tr><th>Код</th><th>Скидка</th><th>Срок</th><th>Описание</th><th>Статус</th></tr></thead>
+    <thead><tr><th>Код</th><th>Скидка</th><th>Срок</th><th>Типы товаров</th><th>Описание</th><th>Статус</th></tr></thead>
     <tbody>
     {% for promo in promos %}
         <tr>
             <td><strong>{{ promo.code }}</strong></td>
             <td>{{ promo.discount_percent }}%</td>
             <td>{{ promo.starts_at|date:"d/m/Y" }} - {{ promo.ends_at|date:"d/m/Y" }}</td>
+            <td>{% if promo.product_types.all %}{% for t in promo.product_types.all %}{{ t.name }}{% if not forloop.last %}, {% endif %}{% endfor %}{% else %}все типы{% endif %}</td>
             <td>{{ promo.description }}</td>
             <td>{% if promo.is_current %}действует{% else %}архив{% endif %}</td>
         </tr>

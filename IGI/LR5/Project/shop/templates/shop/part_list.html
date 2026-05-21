@@ -8,24 +8,47 @@
     {% endif %}
 </div>
 
-<div class="toolbar">
-    <input id="partSearch" type="search" placeholder="Поиск по названию, артикулу, типу">
-    <select id="partSort">
-        <option value="name">Название</option>
-        <option value="price">Цена</option>
-        <option value="quantity">Остаток</option>
+<form class="toolbar" method="get" id="partsFilterForm">
+    <input id="partSearch" type="search" placeholder="{% if user.is_staff or user.is_superuser %}Поиск по названию, артикулу, типу{% else %}Поиск по названию и типу{% endif %}">
+    <select name="type" id="partTypeFilter" aria-label="Тип товара">
+        <option value="">Все типы</option>
+        {% for product_type in types %}
+            <option value="{{ product_type.pk }}" {% if selected_type and selected_type.pk == product_type.pk %}selected{% endif %}>{{ product_type.name }}</option>
+        {% endfor %}
     </select>
-</div>
+    <select name="sort" id="partSort" aria-label="Сортировка">
+        <option value="name" {% if current_sort == 'name' %}selected{% endif %}>Название</option>
+        <option value="price" {% if current_sort == 'price' %}selected{% endif %}>Цена: по возрастанию</option>
+        <option value="price_desc" {% if current_sort == 'price_desc' %}selected{% endif %}>Цена: по убыванию</option>
+        <option value="quantity" {% if current_sort == 'quantity' %}selected{% endif %}>Остаток: по возрастанию</option>
+        <option value="quantity_desc" {% if current_sort == 'quantity_desc' %}selected{% endif %}>Остаток: по убыванию</option>
+    </select>
+</form>
 
 <table class="data-table" id="partsTable">
     <thead>
-    <tr><th>Фото</th><th>Артикул</th><th>Название</th><th>Тип</th><th>Изготовитель</th><th>Цена</th><th>Остаток</th><th></th></tr>
+    <tr>
+        <th>Фото</th>
+        {% if user.is_staff or user.is_superuser %}<th>Артикул</th>{% endif %}
+        <th>Название</th>
+        <th>Тип</th>
+        <th>Изготовитель</th>
+        <th>Цена</th>
+        <th>Остаток</th>
+        <th></th>
+    </tr>
     </thead>
     <tbody>
     {% for part in parts %}
-        <tr data-name="{{ part.name|lower }}" data-sku="{{ part.sku|lower }}" data-type="{{ part.product_type.name|lower }}" data-price="{{ part.price }}" data-quantity="{{ part.quantity }}">
+        <tr
+            data-name="{{ part.name|lower }}"
+            {% if user.is_staff or user.is_superuser %}data-sku="{{ part.sku|lower }}"{% endif %}
+            data-part-type="{{ part.product_type.name|lower }}"
+            data-price="{{ part.price|stringformat:'f' }}"
+            data-quantity="{{ part.quantity }}"
+        >
             <td>{% if part.image_url %}<img class="thumb" src="{{ part.image_url }}" alt="{{ part.name }}">{% endif %}</td>
-            <td>{{ part.sku }}</td>
+            {% if user.is_staff or user.is_superuser %}<td>{{ part.sku }}</td>{% endif %}
             <td><a href="{{ part.get_absolute_url }}">{{ part.name }}</a></td>
             <td>{{ part.product_type.name }}</td>
             <td>{{ part.manufacturer.name }}</td>
@@ -39,6 +62,8 @@
                 {% endif %}
             </td>
         </tr>
+    {% empty %}
+        <tr><td colspan="{% if user.is_staff or user.is_superuser %}8{% else %}7{% endif %}">Товары не найдены.</td></tr>
     {% endfor %}
     </tbody>
 </table>
@@ -46,27 +71,27 @@
 {% block scripts %}
 <script>
 const searchInput = document.getElementById('partSearch');
+const typeSelect = document.getElementById('partTypeFilter');
 const sortSelect = document.getElementById('partSort');
+const filterForm = document.getElementById('partsFilterForm');
 const tbody = document.querySelector('#partsTable tbody');
+
 function filterRows() {
     const query = searchInput.value.trim().toLowerCase();
     [...tbody.rows].forEach(row => {
-        const value = `${row.dataset.name} ${row.dataset.sku} ${row.dataset.type}`;
-        row.hidden = !value.includes(query);
-    });
-}
-function sortRows() {
-    const key = sortSelect.value;
-    const rows = [...tbody.rows];
-    rows.sort((a, b) => {
-        if (key === 'price' || key === 'quantity') {
-            return Number(a.dataset[key]) - Number(b.dataset[key]);
+        if (!row.dataset.name) {
+            return;
         }
-        return a.dataset.name.localeCompare(b.dataset.name, 'ru');
+        const parts = [row.dataset.name, row.dataset.partType];
+        if (row.dataset.sku) {
+            parts.push(row.dataset.sku);
+        }
+        row.hidden = query ? !parts.join(' ').includes(query) : false;
     });
-    rows.forEach(row => tbody.appendChild(row));
 }
+
 searchInput.addEventListener('input', filterRows);
-sortSelect.addEventListener('change', sortRows);
+typeSelect.addEventListener('change', () => filterForm.submit());
+sortSelect.addEventListener('change', () => filterForm.submit());
 </script>
 {% endblock %}

@@ -14,6 +14,11 @@ phone_validator = RegexValidator(
     message='Телефон должен быть в формате +375 (29) XXX-XX-XX.',
 )
 
+email_validator = RegexValidator(
+    regex=r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    message='Введите корректный email, например name@example.com.',
+)
+
 
 def validate_adult(value):
     today = timezone.localdate()
@@ -296,6 +301,13 @@ class PromoCode(TimeStampedModel):
     starts_at = models.DateField()
     ends_at = models.DateField()
     is_active = models.BooleanField(default=True)
+    product_types = models.ManyToManyField(
+        ProductType,
+        blank=True,
+        related_name='promo_codes',
+        verbose_name='Типы товаров',
+        help_text='Пусто — промокод действует на любой товар.',
+    )
 
     class Meta:
         ordering = ['-is_active', 'ends_at']
@@ -305,6 +317,11 @@ class PromoCode(TimeStampedModel):
     def clean(self):
         if self.ends_at < self.starts_at:
             raise ValidationError('Дата окончания не может быть раньше даты начала.')
+
+    def applies_to_part(self, part):
+        if not self.product_types.exists():
+            return True
+        return self.product_types.filter(pk=part.product_type_id).exists()
 
     @property
     def is_current(self):

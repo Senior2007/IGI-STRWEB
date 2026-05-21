@@ -2,6 +2,12 @@
 {% block title %}Личный кабинет{% endblock %}
 {% block content %}
 <h1>Личный кабинет</h1>
+{% if not client and not employee and not user.is_staff %}
+    <section class="section message warning">
+        <p>Профиль клиента не заполнен — покупки недоступны.</p>
+        <a class="button" href="{% url 'complete_client_profile' %}">Заполнить профиль клиента</a>
+    </section>
+{% endif %}
 {% if client %}
     <section class="section">
         <h2>Профиль клиента</h2>

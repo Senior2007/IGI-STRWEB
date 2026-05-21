@@ -22,6 +22,7 @@ urlpatterns = [
     re_path(r'^parts/(?P<pk>\d+)/delete/$', views.part_delete, name='part_delete'),
     re_path(r'^buy/$', views.sale_create, name='sale_create'),
     re_path(r'^profile/$', views.profile, name='profile'),
+    re_path(r'^profile/complete/$', views.complete_client_profile, name='complete_client_profile'),
     re_path(r'^register/$', views.register, name='register'),
     re_path(r'^external-apis/$', views.external_apis, name='external_apis'),
     re_path(r'^stats/$', views.stats, name='stats'),

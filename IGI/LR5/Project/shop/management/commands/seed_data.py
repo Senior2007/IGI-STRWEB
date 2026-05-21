@@ -50,7 +50,7 @@ class Command(BaseCommand):
             ('fresh-brake-discs', 'Новые тормозные диски Brembo уже на складе', 'Поступила партия дисков для Volkswagen, Audi и Skoda.', 'Партия прошла проверку по артикулам и сертификатам. Для клиентов действует резерв на 48 часов после оформления заявки.', 'https://images.unsplash.com/photo-1603386329225-868f9b1ee6c9?auto=format&fit=crop&w=900&q=80'),
             ('winter-filters', 'Подготовили зимний набор фильтров', 'В каталог добавлены воздушные и салонные фильтры для зимнего обслуживания.', 'Комплекты подобраны под самые частые модели клиентов и доступны в рознице и для СТО.', 'https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?auto=format&fit=crop&w=900&q=80'),
             ('battery-sensors', 'Расширили раздел датчиков и электрики', 'На складе появились датчики ABS, кислородные датчики и реле.', 'Новые позиции добавлены с привязкой к изготовителям и поставщикам, чтобы менеджеры быстрее проверяли совместимость.', 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=900&q=80'),
-            ('oil-promo', 'Акция на моторные масла 5W-30', 'До конца месяца действует скидка на популярные масла для бензиновых двигателей.', 'Промокоды доступны в личном кабинете и на странице купонов.', 'https://images.unsplash.com/photo-1635437367037-9271d8b81f50?auto=format&fit=crop&w=900&q=80'),
+            ('oil-promo', 'Акция на моторные масла 5W-30', 'До конца месяца действует скидка на популярные масла для бензиновых двигателей.', 'Промокоды доступны в личном кабинете и на странице купонов.', 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=900&q=80'),
             ('warehouse-inventory', 'Завершена инвентаризация склада', 'Остатки синхронизированы с каталогом и доступны для поиска.', 'После инвентаризации обновлены количества и даты последних поставок.', 'https://images.unsplash.com/photo-1587293852726-70cdb56c2866?auto=format&fit=crop&w=900&q=80'),
             ('suspension-week', 'Неделя деталей подвески', 'Рычаги, стойки стабилизатора и сайлентблоки выделены в отдельную подборку.', 'Менеджеры подготовили таблицу совместимости для распространенных моделей автомобилей.', 'https://images.unsplash.com/photo-1565043666747-69f6646db940?auto=format&fit=crop&w=900&q=80'),
             ('new-supplier-ngk', 'Подключен поставщик свечей NGK', 'Ассортимент свечей зажигания стал шире на 34 позиции.', 'Поставки идут через проверенный канал, данные по партиям занесены в складской учет.', 'https://images.unsplash.com/photo-1597852074816-d933c7d2b988?auto=format&fit=crop&w=900&q=80'),
@@ -155,7 +155,7 @@ class Command(BaseCommand):
             ('AP-BRK-220', 'Тормозные колодки Brembo P 85 020', 'Тормозная система', 'Brembo', '118.50', 42, 'Передние колодки с низким уровнем шума и стабильным торможением.', 'https://images.unsplash.com/photo-1603386329225-868f9b1ee6c9?auto=format&fit=crop&w=900&q=80'),
             ('AP-SUS-314', 'Амортизатор KYB Excel-G', 'Подвеска', 'KYB', '207.00', 28, 'Газомасляный амортизатор для ежедневной эксплуатации и неровных дорог.', 'https://images.unsplash.com/photo-1565043666747-69f6646db940?auto=format&fit=crop&w=900&q=80'),
             ('AP-ELC-411', 'Датчик кислорода Bosch LSU', 'Электрика', 'Bosch', '164.20', 21, 'Лямбда-зонд для контроля состава смеси и корректной работы двигателя.', 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=900&q=80'),
-            ('AP-OIL-530', 'Моторное масло 5W-30 синтетика', 'Масла и жидкости', 'Mahle', '74.00', 85, 'Синтетическое масло для бензиновых и дизельных двигателей с турбонаддувом.', 'https://images.unsplash.com/photo-1635437367037-9271d8b81f50?auto=format&fit=crop&w=900&q=80'),
+            ('AP-OIL-530', 'Моторное масло 5W-30 синтетика', 'Масла и жидкости', 'Mahle', '74.00', 85, 'Синтетическое масло для бензиновых и дизельных двигателей с турбонаддувом.', 'https://images.unsplash.com/photo-1487754180451-c456f719a1fc?fm=jpg&q=80&w=900&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
             ('AP-BLT-612', 'Комплект ремня ГРМ Gates PowerGrip', 'Ремни и ролики', 'Gates', '236.80', 19, 'Комплект ремня и роликов для регламентной замены газораспределительного механизма.', 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=900&q=80'),
             ('AP-SPK-704', 'Свеча зажигания NGK Iridium IX', 'Свечи зажигания', 'NGK', '41.30', 96, 'Иридиевая свеча с устойчивой искрой и увеличенным ресурсом.', 'https://images.unsplash.com/photo-1597852074816-d933c7d2b988?auto=format&fit=crop&w=900&q=80'),
             ('AP-BDY-825', 'Корпус правого зеркала Febi', 'Кузовные детали', 'Febi Bilstein', '89.90', 17, 'Корпус наружного зеркала под окраску, поставляется с креплениями.', 'https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=900&q=80'),
@@ -254,8 +254,33 @@ class Command(BaseCommand):
             ('APRILPARTS', 'Архивная акция на весеннее обслуживание.', 9, date(2026, 4, 1), date(2026, 4, 30), False),
             ('OLDSTOCK', 'Архивный купон на распродажу старых складских остатков.', 18, date(2026, 3, 1), date(2026, 3, 31), False),
         ]
+        promo_type_map = {
+            'BRAKE15': ['Тормозная система'],
+            'FILTER10': ['Фильтры'],
+            'OILWEEK': ['Масла и жидкости'],
+            'KYBPLUS': ['Подвеска'],
+            'LIGHT7': ['Оптика'],
+            'SUMMERCOOL': ['Двигатель', 'Масла и жидкости'],
+            'APRILPARTS': ['Фильтры', 'Масла и жидкости'],
+            'OLDSTOCK': [],
+        }
         for code, description, discount, starts_at, ends_at, is_active in promo_data:
-            PromoCode.objects.create(code=code, description=description, discount_percent=discount, starts_at=starts_at, ends_at=ends_at, is_active=is_active)
+            promo = PromoCode.objects.create(
+                code=code,
+                description=description,
+                discount_percent=discount,
+                starts_at=starts_at,
+                ends_at=ends_at,
+                is_active=is_active,
+            )
+            type_names = promo_type_map.get(code)
+            if type_names:
+                promo.product_types.set(types[name] for name in type_names)
+
+        oil_image_url = 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=900&q=80'
+        broken_oil_image = 'https://images.unsplash.com/photo-1635437367037-9271d8b81f50?auto=format&fit=crop&w=900&q=80'
+        Part.objects.filter(image_url=broken_oil_image).update(image_url=oil_image_url)
+        NewsArticle.objects.filter(image_url=broken_oil_image).update(image_url=oil_image_url)
 
         self.stdout.write(self.style.SUCCESS('Демонстрационные данные созданы. admin/admin12345, manager/manager12345, client1/client12345.'))
 

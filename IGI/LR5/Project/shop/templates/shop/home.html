@@ -8,8 +8,12 @@
     </div>
     <div class="metrics">
         <span><strong>{{ parts_count }}</strong> товаров</span>
-        <span><strong>{{ suppliers_count }}</strong> поставщиков</span>
-        <span><strong>{{ active_promos }}</strong> промокодов</span>
+        {% if user.is_staff or user.is_superuser %}
+            <span><strong>{{ suppliers_count }}</strong> поставщиков</span>
+        {% endif %}
+        {% if user.is_authenticated %}
+            <span><strong>{{ active_promos }}</strong> промокодов</span>
+        {% endif %}
     </div>
 </section>
 

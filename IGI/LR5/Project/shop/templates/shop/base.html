@@ -9,7 +9,7 @@
 </head>
 <body>
 <header class="site-header">
-    <a class="brand" href="{% url 'home' %}">AutoParts LR5</a>
+    <a class="brand" href="{% url 'home' %}">AutoParts</a>
     <nav class="nav">
         <a href="{% url 'part_list' %}">Товары</a>
         <a href="{% url 'news_list' %}">Новости</a>
@@ -18,10 +18,14 @@
         <a href="{% url 'contacts' %}">Контакты</a>
         <a href="{% url 'vacancies' %}">Вакансии</a>
         <a href="{% url 'reviews' %}">Отзывы</a>
-        <a href="{% url 'promos' %}">Промокоды</a>
-        <a href="{% url 'external_apis' %}">API</a>
         {% if user.is_authenticated %}
+            <a href="{% url 'promos' %}">Промокоды</a>
+        {% endif %}
+        <a href="{% url 'external_apis' %}">API</a>
+        {% if user.is_staff or user.is_superuser %}
             <a href="{% url 'stats' %}">Статистика</a>
+        {% endif %}
+        {% if user.is_authenticated %}
             <a href="{% url 'profile' %}">Кабинет</a>
         {% endif %}
     </nav>

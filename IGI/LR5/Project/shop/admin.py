@@ -77,8 +77,9 @@ class ReviewAdmin(admin.ModelAdmin):
 @admin.register(PromoCode)
 class PromoCodeAdmin(admin.ModelAdmin):
     list_display = ('code', 'discount_percent', 'starts_at', 'ends_at', 'is_active')
-    list_filter = ('is_active', 'starts_at', 'ends_at')
+    list_filter = ('is_active', 'starts_at', 'ends_at', 'product_types')
     search_fields = ('code', 'description')
+    filter_horizontal = ('product_types',)
 
 
 admin.site.register(CompanyInfo)

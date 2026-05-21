@@ -6,12 +6,16 @@
     {% if part.image_url %}<img class="detail-image" src="{{ part.image_url }}" alt="{{ part.name }}">{% endif %}
     <p>{{ part.description }}</p>
     <table class="data-table">
-        <tr><th>Артикул</th><td>{{ part.sku }}</td></tr>
+        {% if user.is_staff or user.is_superuser %}
+            <tr><th>Артикул</th><td>{{ part.sku }}</td></tr>
+        {% endif %}
         <tr><th>Тип</th><td>{{ part.product_type.name }}</td></tr>
         <tr><th>Изготовитель</th><td>{{ part.manufacturer.name }}, {{ part.manufacturer.country }}</td></tr>
         <tr><th>Цена</th><td>{{ part.price }} BYN</td></tr>
         <tr><th>Остаток</th><td>{{ part.quantity }}</td></tr>
-        <tr><th>Поставщики</th><td>{% for supplier in part.suppliers.all %}{{ supplier.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</td></tr>
+        {% if user.is_staff or user.is_superuser %}
+            <tr><th>Поставщики</th><td>{% for supplier in part.suppliers.all %}{{ supplier.name }}{% if not forloop.last %}, {% endif %}{% endfor %}</td></tr>
+        {% endif %}
         <tr><th>Создано</th><td>{{ part.created_at_utc|date:"d/m/Y H:i" }} UTC / {{ part.created_at_local_text }} {{ part.created_at_timezone }}</td></tr>
     </table>
     <div class="actions">
