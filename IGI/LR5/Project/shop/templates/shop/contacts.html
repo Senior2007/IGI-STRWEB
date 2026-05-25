@@ -1,0 +1,16 @@
+{% extends 'shop/base.html' %}
+{% block title %}Контакты{% endblock %}
+{% block content %}
+<h1>Контакты сотрудников</h1>
+<div class="grid">
+    {% for employee in employees %}
+        <article class="card">
+            {% if employee.photo_url %}<img src="{{ employee.photo_url }}" alt="{{ employee.last_name }} {{ employee.first_name }}">{% endif %}
+            <h2>{{ employee.last_name }} {{ employee.first_name }}</h2>
+            <p><strong>{{ employee.position }}</strong></p>
+            <p>{{ employee.responsibilities }}</p>
+            <p>{{ employee.phone }}<br>{{ employee.email }}</p>
+        </article>
+    {% endfor %}
+</div>
+{% endblock %}

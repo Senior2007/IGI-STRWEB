@@ -1,0 +1,10 @@
+{% extends 'shop/base.html' %}
+{% block title %}{{ article.title }}{% endblock %}
+{% block content %}
+<article class="detail">
+    <h1>{{ article.title }}</h1>
+    <p class="muted">{{ article.published_at|date:"d/m/Y H:i" }}</p>
+    {% if article.image_url %}<img class="detail-image" src="{{ article.image_url }}" alt="{{ article.title }}">{% endif %}
+    <p>{{ article.content|linebreaks }}</p>
+</article>
+{% endblock %}

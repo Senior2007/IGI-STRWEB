@@ -1,0 +1,15 @@
+{% extends 'shop/base.html' %}
+{% block title %}Внешние API{% endblock %}
+{% block content %}
+<h1>Внешние API</h1>
+<div class="grid two">
+    <article class="card">
+        <h2>Cat Facts API</h2>
+        <p>{{ cat_fact }}</p>
+    </article>
+    <article class="card">
+        <h2>IPify</h2>
+        <p>Текущий IP: {{ ip }}</p>
+    </article>
+</div>
+{% endblock %}

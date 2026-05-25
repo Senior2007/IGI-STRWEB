@@ -1,0 +1,68 @@
+{% extends 'shop/base.html' %}
+{% block title %}Товары{% endblock %}
+{% block content %}
+<div class="page-title">
+    <h1>Каталог запчастей</h1>
+    {% if user.is_staff or user.is_superuser %}
+        <a class="button" href="{% url 'part_create' %}">Добавить товар</a>
+    {% endif %}
+</div>
+
+<form class="toolbar" method="get">
+    <input type="search" name="q" value="{{ search_query }}" placeholder="{% if user.is_staff or user.is_superuser %}Поиск по названию, артикулу, типу{% else %}Поиск по названию и типу{% endif %}">
+    <select name="type" aria-label="Тип товара">
+        <option value="">Все типы</option>
+        {% for product_type in types %}
+            <option value="{{ product_type.pk }}" {% if selected_type and selected_type.pk == product_type.pk %}selected{% endif %}>{{ product_type.name }}</option>
+        {% endfor %}
+    </select>
+    <select name="sort" aria-label="Сортировка">
+        <option value="name" {% if current_sort == 'name' %}selected{% endif %}>Название</option>
+        <option value="price" {% if current_sort == 'price' %}selected{% endif %}>Цена: по возрастанию</option>
+        <option value="price_desc" {% if current_sort == 'price_desc' %}selected{% endif %}>Цена: по убыванию</option>
+        <option value="quantity" {% if current_sort == 'quantity' %}selected{% endif %}>Остаток: по возрастанию</option>
+        <option value="quantity_desc" {% if current_sort == 'quantity_desc' %}selected{% endif %}>Остаток: по убыванию</option>
+    </select>
+    <button type="submit">Применить</button>
+    {% if search_query or selected_type or current_sort != 'name' %}
+        <a class="button secondary" href="{% url 'part_list' %}">Сбросить</a>
+    {% endif %}
+</form>
+
+<table class="data-table">
+    <thead>
+    <tr>
+        <th>Фото</th>
+        {% if user.is_staff or user.is_superuser %}<th>Артикул</th>{% endif %}
+        <th>Название</th>
+        <th>Тип</th>
+        <th>Изготовитель</th>
+        <th>Цена</th>
+        <th>Остаток</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for part in parts %}
+        <tr>
+            <td>{% if part.image_url %}<img class="thumb" src="{{ part.image_url }}" alt="{{ part.name }}">{% endif %}</td>
+            {% if user.is_staff or user.is_superuser %}<td>{{ part.sku }}</td>{% endif %}
+            <td><a href="{{ part.get_absolute_url }}">{{ part.name }}</a></td>
+            <td>{{ part.product_type.name }}</td>
+            <td>{{ part.manufacturer.name }}</td>
+            <td>{{ part.price }} BYN</td>
+            <td>{{ part.quantity }}</td>
+            <td>
+                {% if user.is_authenticated %}<a href="{% url 'sale_create' %}?part={{ part.pk }}">Купить</a>{% endif %}
+                {% if user.is_staff or user.is_superuser %}
+                    <a href="{% url 'part_update' part.pk %}">Изм.</a>
+                    <a href="{% url 'part_delete' part.pk %}">Удалить</a>
+                {% endif %}
+            </td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="{% if user.is_staff or user.is_superuser %}8{% else %}7{% endif %}">Товары не найдены.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'shop/base.html' %}
+{% block title %}О компании{% endblock %}
+{% block content %}
+<h1>О компании</h1>
+<table class="data-table">
+    <thead><tr><th>Фото</th><th>Год</th><th>Раздел</th><th>Описание</th></tr></thead>
+    <tbody>
+    {% for item in items %}
+        <tr>
+            <td>{% if item.logo_url %}<img class="thumb" src="{{ item.logo_url }}" alt="{{ item.title }}">{% endif %}</td>
+            <td>{{ item.year|default:"" }}</td>
+            <td>{{ item.title }}</td>
+            <td>{{ item.content }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
