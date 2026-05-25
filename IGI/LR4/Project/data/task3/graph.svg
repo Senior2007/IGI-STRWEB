@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520">
+  <rect width="100%" height="100%" fill="white" />
+  <line x1="60" y1="930.09" x2="840" y2="930.09" stroke="black" stroke-width="1" />
+  <line x1="60.00" y1="60" x2="60.00" y2="460" stroke="black" stroke-width="1" />
+  <polyline fill="none" stroke="royalblue" stroke-width="2" points="60.00,60.00 450.00,166.50 840.00,460.00" />
+  <polyline fill="none" stroke="darkorange" stroke-width="2" points="60.00,60.00 450.00,166.51 840.00,459.98" />
+  <text x="60" y="30" font-size="22" font-family="Helvetica">Variant 7 graph: cos(x) = sum((-1)^n * x^(2n) / (2n)!)</text>
+  <text x="60" y="55" font-size="16" font-family="Helvetica" fill="royalblue">Series F(x)</text>
+  <text x="200" y="55" font-size="16" font-family="Helvetica" fill="darkorange">math F(x)</text>
+  <text x="790" y="500" font-size="16" font-family="Helvetica">x</text>
+  <text x="20" y="60" font-size="16" font-family="Helvetica">y</text>
+</svg>

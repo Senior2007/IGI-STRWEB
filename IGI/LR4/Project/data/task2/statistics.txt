@@ -1,0 +1,6 @@
+Additional common statistics:
+Total number of sentences: 4
+Number of sentences by type (declarative/interrogative/imperative): 1/2/1
+Average sentence length in symbols (words only): 40.75
+Average word length in symbols: 4.53
+Number of smileys in text: 2
