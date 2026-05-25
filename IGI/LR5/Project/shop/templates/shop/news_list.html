@@ -1,0 +1,16 @@
+{% extends 'shop/base.html' %}
+{% block title %}Новости{% endblock %}
+{% block content %}
+<h1>Новости</h1>
+<div class="grid">
+    {% for article in articles %}
+        <article class="card">
+            {% if article.image_url %}<img src="{{ article.image_url }}" alt="{{ article.title }}">{% endif %}
+            <h2>{{ article.title }}</h2>
+            <p>{{ article.summary }}</p>
+            <small>{{ article.published_at|date:"d/m/Y" }}</small>
+            <a class="button" href="{{ article.get_absolute_url }}">Читать далее</a>
+        </article>
+    {% endfor %}
+</div>
+{% endblock %}

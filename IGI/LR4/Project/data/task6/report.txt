@@ -1,0 +1,30 @@
+Task 6 report
+==================================================
+Dataset: Netflix Stock
+Rows loaded: 4874
+
+Task A:
+Average volume: 16816871.30
+
+Task B:
+Close 5th percentile: 1.4429
+Close 95th percentile: 493.2195
+Average volume for Close > 95th percentile: 4795742.21
+Average volume for Close < 5th percentile: 7203293.83
+Ratio: 0.67
+
+DataFrame info:
+<class 'pandas.DataFrame'>
+RangeIndex: 4874 entries, 0 to 4873
+Data columns (total 7 columns):
+ #   Column     Non-Null Count  Dtype         
+---  ------     --------------  -----         
+ 0   Date       4874 non-null   datetime64[us]
+ 1   Open       4874 non-null   float64       
+ 2   High       4874 non-null   float64       
+ 3   Low        4874 non-null   float64       
+ 4   Close      4874 non-null   float64       
+ 5   Adj Close  4874 non-null   float64       
+ 6   Volume     4874 non-null   int64         
+dtypes: datetime64[us](1), float64(5), int64(1)
+memory usage: 266.7 KB

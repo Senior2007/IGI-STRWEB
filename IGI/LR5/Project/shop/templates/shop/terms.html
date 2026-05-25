@@ -1,0 +1,17 @@
+{% extends 'shop/base.html' %}
+{% block title %}Словарь{% endblock %}
+{% block content %}
+<h1>Словарь терминов и понятий</h1>
+<table class="data-table">
+    <thead><tr><th>Термин</th><th>Определение</th><th>Дата</th></tr></thead>
+    <tbody>
+    {% for term in terms %}
+        <tr>
+            <td>{{ term.title }}</td>
+            <td>{{ term.definition }}</td>
+            <td>{{ term.added_on|date:"d/m/Y" }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
